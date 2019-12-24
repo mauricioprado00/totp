@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+source $(dirname $0)/sources/common.sh
+depends sources/about sources/generate sources/gpg sources/account local/aliases sources/base
+
+function cmd-help() {
+    echo
+    echo "USAGE:"
+    echo "  topt <command> <options>"
+    echo
+    echo "  <command>:"
+    echo "          account                 Account actions"
+    echo "          generate                Generate one-time password"
+    echo "          about                   About this tool"
+    echo 
+}
+
+function cmd-invalid() {
+    local command="$1"
+    local options=${@:2}
+    echo "Invalid <command> ${command}"
+    if [ ! -z "$options" ]; then
+        echo "        <options> ${options}"
+    fi
+}
+
+function handle-command() {
+    local prefix="$1"
+    local help="$2"
+    local invalid="$3"
+    local action=${4}
+    local args="${*:5}"
+    local cmd=${action:-${help}}
+
+    cmd=${prefix}-${cmd}
+
+    if [ "$action" == '--help' ]; then
+        cmd=${prefix}-help
+    fi
+
+    what=$(type -t "${cmd}")
+
+    if [[ -z $what || "$what" != 'function' ]]; then
+        ${invalid} $4 $args
+        cmd=${prefix}-${help}
+    fi
+
+    # execute the action
+    $cmd ${args}
+}
+
+handle-command 'cmd' 'help' 'cmd-invalid' "$@"
+
