@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 source $(dirname $0)/sources/common.sh
-depends sources/about sources/generate sources/gpg sources/account local/aliases sources/base
+depends sources/about sources/generate sources/gpg sources/account sources/aliases sources/base
 
 function cmd-help() {
     echo
