@@ -20,6 +20,7 @@ function cmd-account-help
     echo "  <command>:"
     echo "          create      Creates an account"
     echo "          list        List all accounts"
+    echo "          show        Display account information"
     echo 
 }
 
@@ -134,4 +135,67 @@ function cmd-account-create-help
     echo "  <topt_key>      A string of the topt code provided by the service or"
     echo "                  A filename of a QR code with the topt"
     echo     
+}
+
+function account-key-file
+{
+    local dir=$(base-account-dir)
+    local account_name="$1"
+    local key_file="${dir}/${account_name}/.key"
+    echo ${key_file}
+}
+
+function account-key-file-encrypted
+{
+    local account_name="$1"
+    local key_file=$(account-key-file ${account_name})    
+    local key_file_encrypted="${key_file}.gpg"
+    echo ${key_file_encrypted}
+}
+
+function cmd-account-show
+{
+    local account_name="$1"
+    local res
+    local key
+
+    if [[ -z ${account_name} || \
+        ${account_name} =~ ^(--)?help$  ]]; then
+        cmd-account-show-help
+    fi
+
+    account-exists "${account_name}"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "Account does not exists or key is missing"
+        return $res
+    fi
+
+    key=$(gpg-get-account-key "${account_name}")
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "Could not successfully decrypt key"
+        return $res;
+    fi
+
+    if [ -t 1 ]; then
+        echo 
+    fi
+    echo "Account Name: ${account_name}"
+    echo "Encrypted key file: "$(account-key-file-encrypted $account_name)
+    echo "Key: ${key}"
+    if [ -t 1 ]; then
+        echo 
+    fi
+}
+
+function cmd-account-show-help
+{
+    echo
+    echo "USAGE:"
+    echo "  topt account show <account_name>"
+    echo
+    echo "  <account_name>:"
+    echo "          Can be listed with \`topt account list\`"
+    cmd-account-list
 }
