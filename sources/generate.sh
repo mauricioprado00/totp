@@ -38,11 +38,11 @@ function cmd-generate
 
 function cmd-generate-help
 {
+    local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
     echo
     echo "USAGE:"
     echo "  topt generate <account_name>"
     echo
-    echo "  <account_name>:"
-    echo "          Can be listed with \`topt account list\`"
-    cmd-account-list
+    echo "  <account_name>  A string identifying the account. one of: ${accounts}"
+    echo
 }
