@@ -49,14 +49,15 @@ function depends () {
     popd > /dev/null
 }
 
-__common_trap_list=""
+__common_trap_list=()
 function common-trap-exit-add() {
-    __common_trap_list="$__common_trap_list $1"
+    __common_trap_list+=("$@")
 }
 function common-trap-exit() {
     local trap_command
-    for trap_command in $__common_trap_list; do
-        $trap_command
+    for trap_command in "${__common_trap_list[@]}"; do
+        echo running trap: $trap_command
+        eval $trap_command
     done
 }
 
