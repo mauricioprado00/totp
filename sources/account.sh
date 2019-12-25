@@ -47,12 +47,6 @@ function cmd-account-create
     local account_info="$2"
     local account_topt
 
-    if [[ -z ${account_name} || \
-        ${account_name} =~ ^(--)?help$  ]]; then
-        cmd-account-create-help
-        return 0
-    fi
-
     if [ -z "$account_name" ]; then
         echo Please provide account name:
 

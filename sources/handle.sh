@@ -17,6 +17,7 @@ function handle-command() {
     local help="$2"
     local invalid="$3"
     local action=${4}
+    local action2=${5}
     local cmd=${action:-${help}}
 
     cmd=${prefix}-${cmd}
@@ -31,6 +32,14 @@ function handle-command() {
         ${invalid} $4 "${@:5}"
         ${prefix}-${help}
     else
+        if [[ ${action2} =~ ^(--)?help$  ]]; then
+            what=$(type -t "${cmd}-help")
+            if [ "$what" = "function" ]; then
+                ${cmd}-help ${@:6}
+                return
+            fi
+        fi
+
         # execute the action
         $cmd "${@:5}"
     fi
