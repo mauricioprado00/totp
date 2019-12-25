@@ -9,6 +9,7 @@ function cmd-generate
     if [[ -z ${account_name} || \
         ${account_name} =~ ^(--)?help$  ]]; then
         cmd-generate-help
+        return 0
     fi
 
     account-exists "${account_name}"

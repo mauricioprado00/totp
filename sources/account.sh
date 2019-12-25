@@ -46,6 +46,12 @@ function cmd-account-create
     local account_info="$2"
     local account_topt
 
+    if [[ -z ${account_name} || \
+        ${account_name} =~ ^(--)?help$  ]]; then
+        cmd-account-create-help
+        return 0
+    fi
+
     if [ -z "$account_name" ]; then
         echo Please provide account name:
 
@@ -106,6 +112,20 @@ function cmd-account-create
     fi
 }
 
+function cmd-account-create-help
+{
+    local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
+    echo
+    echo "USAGE:"
+    echo "  topt account create <account_name> <topt_key>"
+    echo
+    echo "  <account_name>  A string identifying the account. one of: ${accounts}"
+    echo "  <topt_key>      A string of the topt code provided by the service or"
+    echo "                  A filename of a QR code with the topt"
+    echo     
+}
+
+
 function account-exists
 {
     local account_name="$1"
@@ -124,19 +144,6 @@ function account-exists
 
     return 0
 }
-
-function cmd-account-create-help
-{
-    echo
-    echo "USAGE:"
-    echo "  topt account create <account_name> <topt_key>"
-    echo
-    echo "  <account_name>  A string identifying the account"
-    echo "  <topt_key>      A string of the topt code provided by the service or"
-    echo "                  A filename of a QR code with the topt"
-    echo     
-}
-
 
 function account-directory
 {
