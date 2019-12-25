@@ -56,7 +56,6 @@ function common-trap-exit-add() {
 function common-trap-exit() {
     local trap_command
     for trap_command in "${__common_trap_list[@]}"; do
-        echo running trap: $trap_command
         eval $trap_command
     done
 }
