@@ -26,8 +26,6 @@ function gpg-get-account-key
     local account_name="$1"
     local key_file="${dir}/${account_name}/.key"
     local key_file_encrypted="${key_file}.gpg"
-    local kid=$(base-gpg-key-id)
-    local uid=$(base-gpg-user-id)
 
     # failsafe stuff
     [ "$account_name" == "" ] && \
@@ -35,5 +33,5 @@ function gpg-get-account-key
     [ ! -f "$key_file_encrypted" ] && \
         { echo "Error: Encrypted file "$key_file_encrypted" not found."; return 2; }
 
-    gpg2 --quiet -u "${kid}" -r "${uid}" --decrypt "$key_file_encrypted"
+    gpg2 --quiet --decrypt "$key_file_encrypted"
 }
