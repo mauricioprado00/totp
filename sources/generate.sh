@@ -7,22 +7,24 @@ function cmd-generate
     local key
 
     if [[ -z ${account_name} ]]; then
-        echo "Missing account name"
+        >&2 echo "Missing account name"
         cmd-generate-help
-        return 10
+        return 1
     fi
 
     account-exists "${account_name}"
     res=$?
     if [ $res -ne 0 ]; then
-        echo "Account does not exists or key is missing"
+        >&2 echo "Account does not exists or key is missing"
+        let 'res = res + 10'
         return $res
     fi
 
     key=$(gpg-get-account-key "${account_name}")
     res=$?
     if [ $res -ne 0 ]; then
-        echo "Could not successfully decrypt key"
+        >&2 echo "Could not successfully decrypt key"
+        let 'res = res + 20'
         return $res;
     fi
 
