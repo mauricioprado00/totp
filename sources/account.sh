@@ -52,6 +52,11 @@ function cmd-account-create
     local account_info="$2"
     local account_topt
 
+    if [[ ${account_name} =~ [^a-zA-Z0-9\.@_-] ]]; then
+        >&2 echo "Invalid account name provided"
+        return 1
+    fi
+
     if [ -z "$account_name" ]; then
         echo Please provide account name:
 
