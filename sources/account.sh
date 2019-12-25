@@ -52,11 +52,6 @@ function cmd-account-create
     local account_info="$2"
     local account_topt
 
-    if [[ ${account_name} =~ [^a-zA-Z0-9\.@_-] ]]; then
-        >&2 echo "Invalid account name provided"
-        return 1
-    fi
-
     if [ -z "$account_name" ]; then
         echo Please provide account name:
 
@@ -71,14 +66,19 @@ function cmd-account-create
         read account_info
     fi
 
+    if [[ ${account_name} =~ [^a-zA-Z0-9\.@_-] ]]; then
+        >&2 echo "Invalid account name provided"
+        return 1
+    fi
+
     if [ -z "$account_name" ]; then
-        echo "Wrong account name ($account_name)"
-        exit 1
+        >&2 echo "Wrong account name ($account_name)"
+        exit 2
     fi
 
     if [ -z "$account_info" ]; then
-        echo "Wrong account topt key ($account_info)"
-        exit 1
+        >&2 echo "Wrong account topt key ($account_info)"
+        exit 3
     fi
 
     if [ -f "$account_info" ] ; then
@@ -88,14 +88,14 @@ function cmd-account-create
     account_topt=$(echo "$account_info" | sed 's#.*secret=##g;s#[^a-z0-9].*##gi')
 
     if [ -z "$account_topt" ]; then
-        echo "Wrong topt key for account ($account_topt)"
-        exit 2
+        >&2 echo "Wrong topt key for account ($account_topt)"
+        return 4
     fi
 
     if [ -d ${dir}/${account_name} ]; then
-        echo "Account directory already exists."
-        printf "\t ${dir}/${account_name}\n"
-        exit 3
+        >&2 echo "Account directory already exists."
+        >&2 printf "\t ${dir}/${account_name}\n"
+        return 5
     fi
 
     echo Creating new account:
