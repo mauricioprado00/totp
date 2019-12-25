@@ -1,10 +1,9 @@
 
 function ggp-encrypt-account-key
 {
-    local dir=$(base-account-dir)
     local account_name="$1"
-    local key_file="${dir}/${account_name}/.key"
-    local key_file_encrypted="${key_file}.gpg"
+    local key_file=$(account-key-file "${account_name}")
+    local key_file_encrypted=$(account-key-file-encrypted "${account_name}")
 
     [ "$account_name" == "" ] && \
         { echo "Usage: $0 service"; return 1; }
@@ -18,10 +17,8 @@ function ggp-encrypt-account-key
 
 function gpg-get-account-key
 {
-    local dir=$(base-account-dir)
     local account_name="$1"
-    local key_file="${dir}/${account_name}/.key"
-    local key_file_encrypted="${key_file}.gpg"
+    local key_file_encrypted=$(account-key-file-encrypted "${account_name}")
 
     # failsafe stuff
     [ "$account_name" == "" ] && \

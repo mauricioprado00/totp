@@ -29,12 +29,16 @@ function cmd-account-help
 function cmd-account-list
 {
     local dir=$(base-account-dir)
-    local accounts=$(ls $dir)
+    local accounts=$(ls $dir 2>/dev/null)
 
     if [ -t 1 ]; then
         echo
-        echo Accounts:
-        echo ${accounts} | sed 's#\( \)#\n  - #g'
+        if [ ! -z "$accounts" ]; then
+            echo Accounts:
+            echo ${accounts} | sed 's#\( \)#\n  - #g'
+        else 
+            echo No accounts found
+        fi
         echo
     else 
         echo $accounts
@@ -130,12 +134,11 @@ function account-exists
     if [ -z "${account_name}" ]; then
         return 1
     fi
-
-    if [ ! -d "${dir}/${account_name}" ]; then
+    if [ ! -d "$(account-directory "$account_name")" ]; then
         return 2
     fi
 
-    if [ ! -f "${dir}/${account_name}/.key.gpg" ]; then
+    if [ ! -f "$(account-key-file-encrypted "$account_name")" ]; then
         return 3
     fi
 
@@ -241,7 +244,7 @@ function cmd-account-rm
     read -p "Continue (y/n)?" choice
     case "$choice" in 
       y|Y|yes )
-        rm -Rf $(account-directory);;
+        rm -Rf $(account-directory "$account_name");;
       n|N ) 
         echo "Cancelled";;
       * ) echo "Invalid option, aborting";;

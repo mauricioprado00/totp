@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source $(basepath)/.env
-
 function base-account-dir()
 {
     echo ~/.topt-2fa/accounts
