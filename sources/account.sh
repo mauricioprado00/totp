@@ -101,6 +101,8 @@ function cmd-account-create
     mkdir -p ${dir}/${account_name}
     chmod 700 ${dir}
     chmod 700 ${dir}/${account_name}
+    # ensure key is shredded in any case
+    common-trap-exit-add "safe-rm ${dir}/${account_name}/.key"
     echo -n "${account_topt}" > ${dir}/${account_name}/.key
     chmod 400 ${dir}/${account_name}/.key
 

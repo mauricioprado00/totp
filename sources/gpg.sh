@@ -13,7 +13,7 @@ function ggp-encrypt-account-key
     [ -f "$key_file_encrypted" ] && \
         { echo "$0 - Error: Encrypted file "$key_file_encrypted" exists."; return 3; }
 
-    gpg2 --encrypt "$key_file" && safe-rm "$key_file"
+    gpg2 --encrypt "$key_file"
 }
 
 function gpg-get-account-key
