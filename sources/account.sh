@@ -160,24 +160,6 @@ function account-key-file-encrypted
     echo ${key_file_encrypted}
 }
 
-function account-gpg-config-file
-{
-    local account_name="$1"
-    local uid_file=$(account-directory "$account_name")/GnuPG.ini
-    echo ${uid_file}
-}
-
-function account-gpg-config-load
-{
-    local account_name="$1"
-    local file=$(account-gpg-config-file "$account_name")
-    if [ ! -f $file ]; then
-        return 1
-    fi
-
-    source $file
-}
-
 function cmd-account-show
 {
     local account_name="$1"
@@ -208,13 +190,6 @@ function cmd-account-show
     fi
 
     echo "Account Name: ${account_name}"
-    account-gpg-config-load "${account_name}"
-    if [ $? -ne 0 ]; then
-        echo "GnuPG: no specific config found"
-    else 
-        echo "GnuPG user: "$(base-gpg-user-id)
-        echo "GnuPG key: "$(base-gpg-key-id)
-    fi
     echo "GnuPG Encrypted topt key file: "$(account-key-file-encrypted $account_name)
     echo "Key: ${key}"
     if [ -t 1 ]; then
