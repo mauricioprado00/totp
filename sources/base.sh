@@ -27,7 +27,7 @@ function safe-rm()
     which shred > /dev/null
     if [ $? -eq 0 ]; then
         # if available, use shred to safelly delete the key file
-        shred -f "$file"
+        shred -fu "$file"
     else
         rm -f "$file"
     fi
