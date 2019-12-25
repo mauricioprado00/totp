@@ -22,6 +22,7 @@ function cmd-account-help
     echo "          create      Creates an account"
     echo "          list        List all accounts"
     echo "          show        Display account information"
+    echo "          rm          Removes an account"
     echo 
 }
 
@@ -210,3 +211,54 @@ function cmd-account-show-help
     echo "  <account_name>  A string identifying the account. one of: ${accounts}"
     echo
 }
+
+function cmd-account-rm
+{
+    local account_name="$1"
+    local res
+    local key
+
+    if [[ -z ${account_name} ]]; then
+        echo "Missing account name"
+        cmd-account-rm-help
+        return 10
+    fi
+
+    account-exists "${account_name}"
+    res=$?
+    if [ $res -ne 0 ]; then
+        echo "Account does not exists or key is missing"
+        return $res
+    fi
+
+    if [ -t 1 ]; then
+        echo 
+    fi
+
+    echo "Deleting account"
+    echo "Account Name: ${account_name}"
+    echo "GnuPG Encrypted topt key file: "$(account-key-file-encrypted $account_name)
+    read -p "Continue (y/n)?" choice
+    case "$choice" in 
+      y|Y|yes )
+        rm -Rf $(account-directory);;
+      n|N ) 
+        echo "Cancelled";;
+      * ) echo "Invalid option, aborting";;
+    esac
+    if [ -t 1 ]; then
+        echo 
+    fi
+}
+
+function cmd-account-rm-help
+{
+    local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
+    echo
+    echo "USAGE:"
+    echo "  topt account rm <account_name>"
+    echo
+    echo "  <account_name>  A string identifying the account. one of: ${accounts}"
+    echo
+}
+
