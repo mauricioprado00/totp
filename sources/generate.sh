@@ -6,10 +6,10 @@ function cmd-generate
     local res
     local key
 
-    if [[ -z ${account_name} || \
-        ${account_name} =~ ^(--)?help$  ]]; then
+    if [[ -z ${account_name} ]]; then
+        echo "Missing account name"
         cmd-generate-help
-        return 0
+        return 10
     fi
 
     account-exists "${account_name}"
