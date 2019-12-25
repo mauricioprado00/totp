@@ -4,6 +4,7 @@ source $(dirname $0)/sources/common.sh
 depends sources/about sources/generate sources/gpg sources/account sources/aliases sources/base
 
 function cmd-help() {
+    handle-help ${FUNCNAME} "$@"
     echo
     echo "USAGE:"
     echo "  topt <command> <options>"
@@ -14,6 +15,19 @@ function cmd-help() {
     echo "          about                   About this tool"
     echo 
 }
+
+function handle-help() {
+    local current="$1"
+    local sub="$2"
+    local name=${1%%help}$sub'-help'
+    local what=$(type -t "${name}")
+
+    if [ "$what" == 'function' ]; then
+        $name "${@:3}"
+        exit
+    fi
+}
+
 
 function cmd-invalid() {
     local command="$1"

@@ -13,6 +13,7 @@ function cmd-account-invalid
 
 function cmd-account-help
 {
+    handle-help ${FUNCNAME} "$@"
     echo
     echo "USAGE:"
     echo "  topt account <command>"
