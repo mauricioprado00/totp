@@ -4,20 +4,7 @@ source $(basepath)/.env
 
 function base-account-dir()
 {
-    # variable defined in .env
-    echo $dir
-}
-
-function base-gpg-key-id()
-{
-    # variable defined in .env
-    echo $kid
-}
-
-function base-gpg-user-id()
-{
-    # variable defined in .env
-    echo $uid
+    echo ~/.topt-2fa/accounts
 }
 
 function safe-rm()
