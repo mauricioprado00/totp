@@ -9,10 +9,7 @@ function cmd-help() {
     echo "USAGE:"
     echo "  topt <command> <options>"
     echo
-    echo "  <command>:"
-    echo "          account                 Account actions"
-    echo "          generate                Generate one-time password"
-    echo "          about                   About this tool"
+    handle-help-commands ${FUNCNAME}
     echo 
 }
 

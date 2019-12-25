@@ -18,12 +18,12 @@ function cmd-account-help
     echo "USAGE:"
     echo "  topt account <command>"
     echo
-    echo "  <command>:"
-    echo "          create      Creates an account"
-    echo "          list        List all accounts"
-    echo "          show        Display account information"
-    echo "          rm          Removes an account"
-    echo 
+    handle-help-commands ${FUNCNAME}
+}
+
+function helpdesc-cmd-account
+{
+    echo -n "Manage accounts/services"
 }
 
 function cmd-account-list
@@ -43,6 +43,11 @@ function cmd-account-list
     else 
         echo $accounts
     fi
+}
+
+function helpdesc-cmd-account-list
+{
+    echo -n "List all accounts"
 }
 
 function cmd-account-create
@@ -131,6 +136,10 @@ function cmd-account-create-help
     echo     
 }
 
+function helpdesc-cmd-account-create
+{
+    echo -n "Creates an account"
+}
 
 function account-exists
 {
@@ -222,6 +231,11 @@ function cmd-account-show-help
     echo
 }
 
+function helpdesc-cmd-account-show
+{
+    echo -n "Display account information"
+}
+
 function cmd-account-rm
 {
     local account_name="$1"
@@ -273,3 +287,7 @@ function cmd-account-rm-help
     echo
 }
 
+function helpdesc-cmd-account-rm
+{
+    echo -n "Removes an account"
+}

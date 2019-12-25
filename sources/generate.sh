@@ -47,4 +47,11 @@ function cmd-generate-help
     echo
     echo "  <account_name>  A string identifying the account. one of: ${accounts}"
     echo
+    handle-help-commands ${FUNCNAME}
+}
+
+
+function helpdesc-cmd-generate
+{
+    echo -n "Generates a one-time password"
 }

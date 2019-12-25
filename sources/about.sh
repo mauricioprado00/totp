@@ -15,3 +15,9 @@ function cmd-about
     echo
 
 }
+
+function helpdesc-cmd-about
+{
+    echo -n "About this tool"
+}
+

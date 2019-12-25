@@ -12,6 +12,34 @@ function handle-help() {
     fi
 }
 
+function handle-help-commands() {
+    local current="$1"
+    local name=${1%%-help}
+    local commands=$(declare -F | \
+        sed 's#^declare -f ##g' | \
+        grep '^helpdesc' | \
+        grep -F "$name" | \
+        sed 's#^helpdesc\-'${name}'-##g' | \
+        grep -v '[^a-zA-Z0-9]' | sort)
+    local command
+    local long_desc
+
+    if [[ $(type -t "helpdesc-${name}") = "function" ]]; then
+        printf '%s\n\n' "$(helpdesc-${name})"
+    fi
+
+    if [ -z "$commands" ]; then
+        return
+    fi
+    echo "  <command>:"
+    for command in $commands; do
+        printf '%*s%*s' 15 "${command}" 5 ' '
+        helpdesc-${name}-${command}
+        printf '\n'
+    done
+    echo
+}
+
 function handle-command() {
     local prefix="$1"
     local help="$2"
