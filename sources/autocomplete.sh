@@ -68,38 +68,24 @@ function cmd-autocomplete-list
 {
     local COMP_WORDS="$1"
     local COMP_CWORD="$2"
-    local word
-    local cword=0
-    local prev_words
     local func_name
-    local filter=""
 
-    >&2 declare -p COMP_WORDS
-    >&2 declare -p COMP_CWORD
+    # convert string to array
+    IFS=' ' read -r -a COMP_WORDS <<< "${COMP_WORDS}"
 
-    for word in $COMP_WORDS; do
-        if [[ $cword -lt $COMP_CWORD && $cword -gt 0 ]]; then
-            if [ -z "$prev_words" ]; then
-                prev_words="$word"
-            else
-                prev_words="${prev_words} $word"
-            fi
-        elif [ $cword -eq $COMP_CWORD ]; then
-            filter="$word"
+    >&2 echo ${#COMP_WORDS}
+    >&2 echo ${COMP_WORDS[${COMP_CWORD}]}
+
+    # reverse walk the array to find a handling function name
+    for idx in `eval echo $(echo -n {${COMP_CWORD}..1})`; do
+        >&2 echo idx $idx
+        >&2 func_name=autocomplete-`echo ${COMP_WORDS[@]:1:$idx} | sed 's# #-#g'`
+        >&2 declare -p func_name
+
+        if [[ `type -t "$func_name" 2>/dev/null` == "function" && $? -eq 0 ]]; then
+            >&2 echo calling $func_name with ${COMP_WORDS[@]:(( $idx + 1 ))}
+            compgen -W "$($func_name)" "${COMP_WORDS[@]:(( $idx + 1 ))}"
             break
         fi
-        let 'cword++'
     done
-
-    func_name=autocomplete-$(echo "$prev_words" | sed 's# \+#-#g')
-
-    >&2 declare -p prev_words
-    >&2 declare -p func_name
-    >&2 declare -p word
-
-    type -t "$func_name" > /dev/null
-    if [ $? -eq 0 ]; then
-        >&2 echo calling $func_name with $filter
-        compgen -W "$($func_name)" "$filter"
-    fi
 }
