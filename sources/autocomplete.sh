@@ -78,6 +78,12 @@ function cmd-autocomplete-list
     #for idx in `eval echo $(echo -n {${COMP_CWORD}..1})`; do
         func_name=autocomplete_`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #_#g'`
 
+        declare -p ${func_name} 1>/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            # found variable containing function name
+            eval 'func_name=$'$func_name
+        fi
+
         if [[ `type -t "$func_name" 2>/dev/null` == "function" && $? -eq 0 ]]; then
             # call found function to obtain list of words
             compgen -W "$($func_name)" "${COMP_WORDS[@]:(( $COMP_CWORD + 1 ))}"
