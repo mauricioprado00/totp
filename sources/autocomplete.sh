@@ -69,19 +69,18 @@ function cmd-autocomplete-list
     local COMP_WORDS="$1"
     local COMP_CWORD="$2"
     local func_name
-    local idx
 
     # convert string to array
     IFS=' ' read -r -a COMP_WORDS <<< "${COMP_WORDS}"
 
     # reverse walk the array to find a handling function name
-    for (( idx=COMP_CWORD; idx >= 1 ; idx-=1 )); do
+    for (( ; COMP_CWORD >= 1 ; COMP_CWORD-=1 )); do
     #for idx in `eval echo $(echo -n {${COMP_CWORD}..1})`; do
-        func_name=autocomplete-`echo ${COMP_WORDS[@]:1:$idx} | sed 's# #-#g'`
+        func_name=autocomplete-`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #-#g'`
 
         if [[ `type -t "$func_name" 2>/dev/null` == "function" && $? -eq 0 ]]; then
             # call found function to obtain list of words
-            compgen -W "$($func_name)" "${COMP_WORDS[@]:(( $idx + 1 ))}"
+            compgen -W "$($func_name)" "${COMP_WORDS[@]:(( $COMP_CWORD + 1 ))}"
             break
         fi
     done
