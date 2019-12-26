@@ -236,6 +236,11 @@ function helpdesc-cmd-account-show
     echo -n "Display account information"
 }
 
+function autocomplete-account-show
+{
+    cmd-account-list | cat
+}
+
 function cmd-account-rm
 {
     local account_name="$1"
