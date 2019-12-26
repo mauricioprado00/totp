@@ -76,7 +76,7 @@ function cmd-autocomplete-list
     # reverse walk the array to find a handling function name
     for (( ; COMP_CWORD >= 1 ; COMP_CWORD-=1 )); do
     #for idx in `eval echo $(echo -n {${COMP_CWORD}..1})`; do
-        func_name=autocomplete-`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #-#g'`
+        func_name=autocomplete_`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #_#g'`
 
         if [[ `type -t "$func_name" 2>/dev/null` == "function" && $? -eq 0 ]]; then
             # call found function to obtain list of words

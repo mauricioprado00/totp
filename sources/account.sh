@@ -236,7 +236,7 @@ function helpdesc-cmd-account-show
     echo -n "Display account information"
 }
 
-function autocomplete-account-show
+function autocomplete_account_show
 {
     cmd-account-list | cat
 }
