@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 source $(dirname $0)/sources/common.sh
-depends sources/handle sources/about sources/generate sources/gpg sources/account sources/autocomplete sources/aliases sources/base
+depends sources/handle sources/screenshot sources/about sources/generate sources/gpg sources/account sources/autocomplete sources/aliases sources/base
 
 function cmd-help() {
     handle-help ${FUNCNAME} "$@"

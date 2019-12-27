@@ -50,6 +50,7 @@ function cmd-account-create
     local account_name="$1"
     local account_info="$2"
     local account_topt
+    local choice
 
     if [ -z "$account_name" ]; then
         echo Please provide account name:
@@ -60,9 +61,35 @@ function cmd-account-create
     fi
 
     if [ -z "$account_info" ]; then
-        echo Please provide filename of the QR code or the topt key:
+        echo "Please choose option to provide topt key:"
+        echo "a) the topt key"
+        echo "b) an image filename with the QR code"
+        echo "c) take a screenshot (default action)"
 
-        read account_info
+        read -p "Your choice (a/b/c)?" choice
+        case "$choice" in 
+          a )
+            echo Please provide the topt key:
+            read account_info;;
+          b )
+            echo Please provide filename of the QR code:
+            read account_info;;
+          c|"") 
+            account_info=$(screenshot-take)
+            if [ $? -ne 0 ]; then
+                echo error taking screenshot
+                return 7
+            fi
+            ;;
+          * ) 
+            echo "Invalid option, aborting"
+            return 6
+            ;;
+        esac
+        # make sure screenshot image is deleted afterwards
+        common-trap-exit-add "safe-rm $account_info"
+
+        gwenview $account_info
     fi
 
     if [[ ${account_name} =~ [^a-zA-Z0-9\.@_-] ]]; then
