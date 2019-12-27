@@ -2,13 +2,7 @@
 
 function cmd-account
 {
-    handle-command 'cmd-account' 'help' 'cmd-account-invalid' "$@"
-}
-
-function cmd-account-invalid
-{
-    cmd-invalid "${@:2}"
-#    cmd-account-help
+    handle-command 'cmd-account' 'help' 'invalid-command' "$@"
 }
 
 function cmd-account-help

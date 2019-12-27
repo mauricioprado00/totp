@@ -2,13 +2,7 @@
 __autocomplete_app="$0"
 function cmd-autocomplete
 {
-    handle-command 'cmd-autocomplete' 'help' 'cmd-autocomplete-invalid' "$@"
-}
-
-function cmd-autocomplete-invalid
-{
-    cmd-invalid "${@:2}"
-#    cmd-account-help
+    handle-command 'cmd-autocomplete' 'help' 'invalid-command' "$@"
 }
 
 function cmd-autocomplete-help
