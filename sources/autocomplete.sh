@@ -97,7 +97,7 @@ function cmd-autocomplete-list
     func_name=${COMP_WORDS[@]:1:$COMP_CWORD}
     func_name=cmd-`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #-#g'`
     if [[ $func_name =~ ^[a-z-]+$ ]]; then
-        if [ ${#COMP_WORDS[@]} -le $COMP_CWORD ]; then
+        if [[ ${#COMP_WORDS[@]} -le $COMP_CWORD && $COMP_CWORD -gt 1 ]]; then
             func_name=${func_name}'-'
         fi
         IFS=" " read -r -a func_name <<< $(declare -F | \
