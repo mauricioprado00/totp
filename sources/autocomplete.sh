@@ -96,13 +96,15 @@ function cmd-autocomplete-list
     COMP_CWORD=$(($2 > COMP_CWORD ? COMP_CWORD : $2 ))
     func_name=${COMP_WORDS[@]:1:$COMP_CWORD}
     func_name=cmd-`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #-#g'`
-    if [ ${#COMP_WORDS[@]} -le $COMP_CWORD ]; then
-        func_name=${func_name}'-'
+    if [[ $func_name =~ ^[a-z-]+$ ]]; then
+        if [ ${#COMP_WORDS[@]} -le $COMP_CWORD ]; then
+            func_name=${func_name}'-'
+        fi
+        IFS=" " read -r -a func_name <<< $(declare -F | \
+            awk '{print $NF}' | \
+            sort | uniq | \
+            grep '^'$func_name | \
+            awk -F '-' $COMP_CWORD' == NF-1 {print $NF }' | tr '\n' ' ')
+        echo ${func_name[@]}
     fi
-    IFS=" " read -r -a func_name <<< $(declare -F | \
-        awk '{print $NF}' | \
-        sort | uniq | \
-        grep '^'$func_name | \
-        awk -F '-' $COMP_CWORD' == NF-1 {print $NF }' | tr '\n' ' ')
-    echo ${func_name[@]}
 }
