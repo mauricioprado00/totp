@@ -23,9 +23,20 @@ function helpdesc-cmd-autocomplete
 
 function cmd-autocomplete-register
 {
-    echo registering "$__autocomplete_app"
-    complete -W "about account autocomplete generate" './topt'
+    >&2 echo Use following script to generate autocomplete $0
+    cat <<OUT 
 
+function topt_complete () {
+    local words=("\${COMP_WORDS[@]}");
+    unset words[0];
+    unset words[\$COMP_CWORD];
+    local completions=\$(./topt autocomplete list "\${COMP_WORDS[*]}" "\${COMP_CWORD}");
+    COMPREPLY=(\$(compgen -W "\$completions" -- "\$word"));
+}
+
+complete -F topt_complete $0
+
+OUT
 }
 
 function helpdesc-cmd-autocomplete-register
