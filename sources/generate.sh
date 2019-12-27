@@ -55,3 +55,5 @@ function helpdesc-cmd-generate
 {
     echo -n "Generates a one-time password"
 }
+
+autocomplete_generate=cmd-account-list

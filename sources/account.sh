@@ -287,3 +287,5 @@ function helpdesc-cmd-account-rm
 {
     echo -n "Removes an account"
 }
+
+autocomplete_account_rm=cmd-account-list
