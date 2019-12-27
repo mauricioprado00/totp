@@ -78,6 +78,26 @@ function cmd-autocomplete-list
     # convert string to array
     IFS=' ' read -r -a COMP_WORDS <<< "${COMP_WORDS}"
 
+    # find a command name just like what is being typed
+    COMP_CWORD=${#COMP_WORDS[@]}
+    COMP_CWORD=$(($2 > COMP_CWORD ? COMP_CWORD : $2 ))
+    func_name=${COMP_WORDS[@]:1:$COMP_CWORD}
+    func_name=cmd-`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #-#g'`
+    if [[ $func_name =~ ^[a-z-]+$ ]]; then
+        if [[ ${#COMP_WORDS[@]} -le $COMP_CWORD && $COMP_CWORD -gt 1 ]]; then
+            func_name=${func_name}'-'
+        fi
+        IFS=" " read -r -a func_name <<< $(declare -F | \
+            awk '{print $NF}' | \
+            sort | uniq | \
+            grep '^'$func_name | \
+            awk -F '-' $COMP_CWORD' == NF-1 {print $NF }' | tr '\n' ' ' | grep -v '^\s*help\s*$')
+        if [ ${#func_name[@]} -gt 0 ]; then
+            echo ${func_name[@]}
+            return
+        fi
+    fi
+
     # reverse walk the array to find a handling function name
     for (( ; COMP_CWORD >= 1 ; COMP_CWORD-=1 )); do
     #for idx in `eval echo $(echo -n {${COMP_CWORD}..1})`; do
@@ -92,24 +112,7 @@ function cmd-autocomplete-list
         if [[ `type -t "$func_name" 2>/dev/null` == "function" && $? -eq 0 ]]; then
             # call found function to obtain list of words
             compgen -W "$($func_name)" "${COMP_WORDS[@]:(( $COMP_CWORD + 1 ))}"
-            break
+            return
         fi
     done
-
-    # find a command name just like what is being typed
-    COMP_CWORD=${#COMP_WORDS[@]}
-    COMP_CWORD=$(($2 > COMP_CWORD ? COMP_CWORD : $2 ))
-    func_name=${COMP_WORDS[@]:1:$COMP_CWORD}
-    func_name=cmd-`echo ${COMP_WORDS[@]:1:$COMP_CWORD} | sed 's# #-#g'`
-    if [[ $func_name =~ ^[a-z-]+$ ]]; then
-        if [[ ${#COMP_WORDS[@]} -le $COMP_CWORD && $COMP_CWORD -gt 1 ]]; then
-            func_name=${func_name}'-'
-        fi
-        IFS=" " read -r -a func_name <<< $(declare -F | \
-            awk '{print $NF}' | \
-            sort | uniq | \
-            grep '^'$func_name | \
-            awk -F '-' $COMP_CWORD' == NF-1 {print $NF }' | tr '\n' ' ')
-        echo ${func_name[@]}
-    fi
 }
