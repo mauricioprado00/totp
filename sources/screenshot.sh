@@ -5,15 +5,13 @@ function screenshot-take
     local binary_file
     local wait=1
     local tools=(
-        "maim"
         "import"
         "gnome-screenshot"
         "scrot"
         "spectacle"
+        "maim"
     )
     local tools_format=(
-        # maim
-        '%s %s'
         # import
         '%s %s'
         # gnome-screenshot
@@ -22,6 +20,8 @@ function screenshot-take
         '%s %s'
         # spectacle
         '%s -b -o %s -r'
+        # maim
+        '%s %s'
     )
 
     >&2 echo Waiting $wait seconds before taking screenshot
