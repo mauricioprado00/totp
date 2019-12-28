@@ -4,7 +4,7 @@ function screenshot-take
 {
     local binary_file
     local wait=1
-    local tools=("import" "gnome-screenshot" "scrot" "spectacle")
+    local tools=("maim" "import" "gnome-screenshot" "scrot" "spectacle")
 
     >&2 echo Waiting $wait seconds before taking screenshot
     sleep 1
@@ -19,6 +19,19 @@ function screenshot-take
 
     >&2 "Missing tool to take screenshot. Please install either imagemagik, scrot, gnome-screenshot or spectacle"
     return 1
+}
+
+# try use maim
+function screenshot-take-maim
+{
+    local file=$(mktemp /tmp/XXXXXXX.png)
+    >&2 echo creating screenshot with $1 in $file
+    $1 ${file}
+    if [ $? -ne 0 ]; then
+        return 1
+    fi
+
+    echo ${file}    
 }
 
 # try use spectacle
