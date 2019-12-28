@@ -1,36 +1,37 @@
 #!/usr/bin/env bash
+function screenshot-tool-list
+{
+    declare -A list
+    list['import']="%s %s"
+    list['gnome-screenshot']="%s -f %s -a"
+    list['scrot']='%s %s'
+    list['spectacle']='%s -b -o %s -r'
+    list['maim']='%s %s'
 
+    if [ ! -z "$2" ]; then
+        # the orders
+        eval $2'=(import gnome-screenshot scrot spectacle maim)'
+    fi
+    # the items
+    eval $1$(declare -p list | sed 's#declare -[aA] list##g')
+}
 function screenshot-take
 {
     local binary_file
     local wait=1
-    local tools=(
-        "import"
-        "gnome-screenshot"
-        "scrot"
-        "spectacle"
-        "maim"
-    )
-    local tools_format=(
-        # import
-        '%s %s'
-        # gnome-screenshot
-        '%s -f %s -a'
-        # scrot
-        '%s %s'
-        # spectacle
-        '%s -b -o %s -r'
-        # maim
-        '%s %s'
-    )
+    local toolname
+    local tools_names
+
+    declare -A tools
+    declare -a tools_names
+    screenshot-tool-list tools tools_names
 
     >&2 echo Waiting $wait seconds before taking screenshot
-    sleep 1
-
-    for (( ctool=0; ctool < ${#tools[@]}; ctool++ )); do        
-        binary_file=$(which ${tools[ctool]})
+    sleep $wait
+    for toolname in "${tools_names[@]}"; do
+        binary_file=$(which ${toolname})
         if [ $? -eq 0 ]; then
-            screenshot-take-generic "$binary_file" "${tools_format[ctool]}"
+            screenshot-take-generic "$binary_file" "${tools[$toolname]}"
             return
         fi
     done
