@@ -89,7 +89,6 @@ function cmd-account-create
         # make sure screenshot image is deleted afterwards
         common-trap-exit-add "safe-rm $account_info"
 
-        gwenview $account_info
     fi
 
     if [[ ${account_name} =~ [^a-zA-Z0-9\.@_-] ]]; then
