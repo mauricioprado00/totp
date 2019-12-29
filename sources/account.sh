@@ -135,12 +135,13 @@ function cmd-account-create
     echo -n "${account_topt}" > ${dir}/${account_name}/.key
     chmod 400 ${dir}/${account_name}/.key
 
+    common-trap-exit-add "rmdir ${dir}/${account_name} > /dev/null"
     ggp-encrypt-account-key ${account_name}
 
     if [ $? -ne 0 ]; then
         echo Could not encrypt topt key, aborting and removing account
         safe-rm ${dir}/${account_name}/.key
-        rm -Rf ${dir}/${account_name}
+        rm -Rf ${dir}/${account_name} > /dev/null
     fi
 }
 
