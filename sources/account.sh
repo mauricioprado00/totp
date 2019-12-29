@@ -53,7 +53,7 @@ function cmd-account-create
     local choice
 
     if [ -z "$account_name" ]; then
-        echo Please provide account name:
+        echo Please provide account name (use only leters, numbers and hyphens):
 
         read account_name
 
