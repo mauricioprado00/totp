@@ -53,11 +53,11 @@ function cmd-account-create
     local choice
 
     if [ -z "$account_name" ]; then
-        echo Please provide account name (use only leters, numbers and hyphens):
+        echo 'Please provide account name (use only leters, numbers and hyphens):'
 
         read account_name
 
-        echo the acccount name $account_name
+        echo 'the acccount name $account_name'
     fi
 
     if [ -z "$account_info" ]; then
@@ -69,15 +69,15 @@ function cmd-account-create
         read -p "Your choice (a/b/c)?" choice
         case "$choice" in 
           a )
-            echo Please provide the topt key:
+            echo 'Please provide the topt key:'
             read account_info;;
           b )
-            echo Please provide filename of the QR code:
+            echo 'Please provide filename of the QR code:'
             read account_info;;
           c|"") 
             account_info=$(screenshot-take)
             if [ $? -ne 0 ]; then
-                echo error taking screenshot
+                echo 'Error while taking screenshot'
                 return 7
             fi
             ;;
@@ -123,10 +123,10 @@ function cmd-account-create
         return 5
     fi
 
-    echo Creating new account:
-    echo Account Name: $account_name
-    echo Topt Key: $account_topt
-    echo Location: ${dir}/${account_name}
+    echo 'Creating new account:'
+    echo 'Account Name: '$account_name
+    echo 'Topt Key: '$account_topt
+    echo 'Location: '${dir}/${account_name}
     mkdir -p ${dir}/${account_name}
     chmod 700 ${dir}
     chmod 700 ${dir}/${account_name}
@@ -139,7 +139,7 @@ function cmd-account-create
     ggp-encrypt-account-key ${account_name}
 
     if [ $? -ne 0 ]; then
-        echo Could not encrypt topt key, aborting and removing account
+        echo 'Could not encrypt topt key, aborting and removing account'
         safe-rm ${dir}/${account_name}/.key
         rm -Rf ${dir}/${account_name} > /dev/null
     fi
