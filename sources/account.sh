@@ -131,7 +131,7 @@ function cmd-account-create
     echo -n "${account_topt}" > ${dir}/${account_name}/.key
     chmod 400 ${dir}/${account_name}/.key
 
-    common-trap-exit-add "[ -d ${dir}/${account_name} ] && rmdir ${dir}/${account_name}"
+    common-trap-exit-add "rmdir ${dir}/${account_name} 2>/dev/null"
     ggp-encrypt-account-key ${account_name}
 
     if [ $? -ne 0 ]; then
