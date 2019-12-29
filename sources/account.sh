@@ -44,12 +44,22 @@ function helpdesc-cmd-account-list
     echo -n "List all accounts"
 }
 
+function account-topt
+{
+    local account_topt=$(echo "$1" | sed 's#.*secret=##g;s#[^a-z0-9].*##gi')
+
+    if [ -z "$account_topt" ]; then
+        return 1
+    fi
+
+    echo -n "$account_topt"
+}
+
 function cmd-account-create
 {
     local dir=$(base-account-dir)
     local account_name="$1"
     local account_info="$2"
-    local account_topt
     local choice
 
     if [ -z "$account_name" ]; then
@@ -110,10 +120,9 @@ function cmd-account-create
         account_info=$(zbarimg "$account_info" 2>/dev/null)
     fi
 
-    account_topt=$(echo "$account_info" | sed 's#.*secret=##g;s#[^a-z0-9].*##gi')
-
-    if [ -z "$account_topt" ]; then
-        >&2 echo "Wrong topt key for account ($account_topt)"
+    account-topt "$account_info" >/dev/null
+    if [ $? -ne 0 ]; then
+        >&2 echo "Wrong topt key for account ($account_info)"
         return 4
     fi
 
@@ -128,7 +137,7 @@ function cmd-account-create
     chmod 700 ${dir}/${account_name}
     # ensure key is shredded in any case
     common-trap-exit-add "safe-rm ${dir}/${account_name}/.key"
-    echo -n "${account_topt}" > ${dir}/${account_name}/.key
+    echo -n "$account_info" > ${dir}/${account_name}/.key
     chmod 400 ${dir}/${account_name}/.key
 
     common-trap-exit-add "rmdir ${dir}/${account_name} 2>/dev/null"
@@ -142,7 +151,7 @@ function cmd-account-create
     fi
     echo 'Account created:'
     echo 'Account Name: '$account_name
-    echo 'Topt Key: '$account_topt
+    echo 'Account Info: '$account_info
     echo 'Location: '${dir}/${account_name}
 }
 
@@ -236,7 +245,7 @@ function cmd-account-show
 
     echo "Account Name: ${account_name}"
     echo "GnuPG Encrypted topt key file: "$(account-key-file-encrypted $account_name)
-    echo "Key: ${key}"
+    echo "Info: ${key}"
     if [ -t 1 ]; then
         echo 
     fi

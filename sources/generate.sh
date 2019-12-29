@@ -5,6 +5,7 @@ function cmd-generate
     local account_name="$1"
     local res
     local key
+    local info
 
     if [[ -z ${account_name} ]]; then
         >&2 echo "Missing account name"
@@ -20,13 +21,15 @@ function cmd-generate
         return $res
     fi
 
-    key=$(gpg-get-account-key "${account_name}")
+    info=$(gpg-get-account-key "${account_name}")
     res=$?
     if [ $res -ne 0 ]; then
         >&2 echo "Could not successfully decrypt key"
         let 'res = res + 20'
         return $res;
     fi
+
+    key=$(account-topt "$info")
 
     if [ -t 1 ]; then
         echo 
