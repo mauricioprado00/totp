@@ -29,7 +29,7 @@ function cmd-generate
         return $res;
     fi
 
-    key=$(account-topt "$info")
+    key=$(account-totp "$info")
 
     if [ -t 1 ]; then
         echo 
@@ -46,7 +46,7 @@ function cmd-generate-help
     local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
     echo
     echo "USAGE:"
-    echo "  topt generate <account_name>"
+    echo "  totp generate <account_name>"
     echo
     echo "  <account_name>  A string identifying the account. one of: ${accounts}"
     echo

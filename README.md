@@ -12,13 +12,13 @@ e.g.: ssb   rsa4096/XX1X11XX11X1X11X
 
 create accounts using either:
 
-`./create.sh <accountid> <topt_key>`
+`./create.sh <accountid> <totp_key>`
 
 or
 
 `./create.sh <accountid> <qr-code-file>`
 
-Where qr-code-file is the png file that contains the QR code that application offers to scan the topt key.
+Where qr-code-file is the png file that contains the QR code that application offers to scan the totp key.
 
 
 ## Obtain a code for an account:

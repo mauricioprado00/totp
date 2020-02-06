@@ -3,8 +3,8 @@
 function cmd-about
 {
     echo
-    echo "TOPT: Time-based One-Time Password Tool"
-    echo "  topt is a tool that allows you to adminstrate authentification keys"
+    echo "TOTP: Time-based One-Time Password Tool"
+    echo "  totp is a tool that allows you to adminstrate authentification keys"
     echo "  in a safelly manner. "
     echo "  Your keys are safelly manipulated, stored, encrypted and shreded. "
     echo

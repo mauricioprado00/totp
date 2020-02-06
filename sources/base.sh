@@ -2,7 +2,7 @@
 
 function base-account-dir()
 {
-    echo ~/.topt-2fa/accounts
+    echo ~/.totp-2fa/accounts
 }
 
 function safe-rm()

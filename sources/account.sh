@@ -10,7 +10,7 @@ function cmd-account-help
     handle-help ${FUNCNAME} "$@"
     echo
     echo "USAGE:"
-    echo "  topt account <command>"
+    echo "  totp account <command>"
     echo
     handle-help-commands ${FUNCNAME}
 }
@@ -28,8 +28,8 @@ function cmd-account-list
     if [ -t 1 ]; then
         echo
         if [ ! -z "$accounts" ]; then
-            echo Accounts:
-            echo ${accounts} | sed 's#\( \)#\n  - #g'
+            echo -n Accounts:
+            echo ${accounts} | sed 's# \|^#\n  - #g'
         else 
             echo No accounts found
         fi
@@ -44,15 +44,15 @@ function helpdesc-cmd-account-list
     echo -n "List all accounts"
 }
 
-function account-topt
+function account-totp
 {
-    local account_topt=$(echo "$1" | sed 's#.*secret=##g;s#[^a-z0-9].*##gi')
+    local account_totp=$(echo "$1" | sed 's#.*secret=##g;s#[^a-z0-9].*##gi')
 
-    if [ -z "$account_topt" ]; then
+    if [ -z "$account_totp" ]; then
         return 1
     fi
 
-    echo -n "$account_topt"
+    echo -n "$account_totp"
 }
 
 function cmd-account-create
@@ -71,15 +71,15 @@ function cmd-account-create
     fi
 
     if [ -z "$account_info" ]; then
-        echo "Please choose option to provide topt key:"
-        echo "a) the topt key"
+        echo "Please choose option to provide totp key:"
+        echo "a) the totp key"
         echo "b) an image filename with the QR code"
         echo "c) take a screenshot (default action)"
 
         read -p "Your choice (a/b/c)?" choice
         case "$choice" in 
           a )
-            echo 'Please provide the topt key:'
+            echo 'Please provide the totp key:'
             read account_info;;
           b )
             echo 'Please provide filename of the QR code:'
@@ -112,7 +112,7 @@ function cmd-account-create
     fi
 
     if [ -z "$account_info" ]; then
-        >&2 echo "Wrong account topt key ($account_info)"
+        >&2 echo "Wrong account totp key ($account_info)"
         exit 3
     fi
 
@@ -120,9 +120,9 @@ function cmd-account-create
         account_info=$(zbarimg "$account_info" 2>/dev/null)
     fi
 
-    account-topt "$account_info" >/dev/null
+    account-totp "$account_info" >/dev/null
     if [ $? -ne 0 ]; then
-        >&2 echo "Wrong topt key for account ($account_info)"
+        >&2 echo "Wrong totp key for account ($account_info)"
         return 4
     fi
 
@@ -144,7 +144,7 @@ function cmd-account-create
     ggp-encrypt-account-key ${account_name}
 
     if [ $? -ne 0 ]; then
-        echo 'Could not encrypt topt key, aborting and removing account'
+        echo 'Could not encrypt totp key, aborting and removing account'
         safe-rm ${dir}/${account_name}/.key
         rm -Rf ${dir}/${account_name} > /dev/null
         return 1
@@ -159,11 +159,11 @@ function cmd-account-create-help
 {
     echo
     echo "USAGE:"
-    echo "  topt account create <account_name> <topt_key>"
+    echo "  totp account create <account_name> <totp_key>"
     echo
     echo "  <account_name>  A string identifying the account."
-    echo "  <topt_key>      A string of the topt code provided by the service or"
-    echo "                  A filename of a QR code containing the topt key"
+    echo "  <totp_key>      A string of the totp code provided by the service or"
+    echo "                  A filename of a QR code containing the totp key"
     echo     
 }
 
@@ -244,7 +244,7 @@ function cmd-account-show
     fi
 
     echo "Account Name: ${account_name}"
-    echo "GnuPG Encrypted topt key file: "$(account-key-file-encrypted $account_name)
+    echo "GnuPG Encrypted totp key file: "$(account-key-file-encrypted $account_name)
     echo "Info: ${key}"
     if [ -t 1 ]; then
         echo 
@@ -256,7 +256,7 @@ function cmd-account-show-help
     local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
     echo
     echo "USAGE:"
-    echo "  topt account show <account_name>"
+    echo "  totp account show <account_name>"
     echo
     echo "  <account_name>  A string identifying the account. one of: ${accounts}"
     echo
@@ -295,7 +295,7 @@ function cmd-account-rm
 
     echo "Deleting account"
     echo "Account Name: ${account_name}"
-    echo "GnuPG Encrypted topt key file: "$(account-key-file-encrypted $account_name)
+    echo "GnuPG Encrypted totp key file: "$(account-key-file-encrypted $account_name)
     read -p "Continue (y/n)?" choice
     case "$choice" in 
       y|Y|yes )
@@ -314,7 +314,7 @@ function cmd-account-rm-help
     local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
     echo
     echo "USAGE:"
-    echo "  topt account rm <account_name>"
+    echo "  totp account rm <account_name>"
     echo
     echo "  <account_name>  A string identifying the account. one of: ${accounts}"
     echo

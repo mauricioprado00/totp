@@ -7,7 +7,7 @@ function cmd-help() {
     handle-help ${FUNCNAME} "$@"
     echo
     echo "USAGE:"
-    echo "  topt <command> <options>"
+    echo "  totp <command> <options>"
     echo
     handle-help-commands ${FUNCNAME}
     echo 
@@ -22,5 +22,6 @@ function invalid-command() {
     fi
 }
 
+handle-suggestions 'suggest-'
 handle-command 'cmd' 'help' 'invalid-command' "$@"
 

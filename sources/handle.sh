@@ -73,3 +73,16 @@ function handle-command() {
     fi
 
 }
+
+function handle-suggestions()
+{
+    local funcs=$(declare -F | \
+            awk '{print $NF}' | \
+            sort | uniq | grep '^'$1)
+
+    local name
+
+    for name in $funcs; do
+        $name
+    done
+}

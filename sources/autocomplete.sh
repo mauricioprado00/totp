@@ -10,7 +10,7 @@ function cmd-autocomplete-help
     handle-help ${FUNCNAME} "$@"
     echo
     echo "USAGE:"
-    echo "  topt aucotomplete <command>"
+    echo "  totp aucotomplete <command>"
     echo
     handle-help-commands ${FUNCNAME}
 }
@@ -23,18 +23,23 @@ function helpdesc-cmd-autocomplete
 
 function cmd-autocomplete-register
 {
+    if [ -t 1 ]; then
     >&2 echo Use following script to generate autocomplete $0
+    >&2 echo or run:
+    >&2 printf "\teval \`$0 autocomplete register\`\n"
+
+    fi
     cat <<OUT 
 
-function topt_complete () {
+function totp_complete () {
     local words=("\${COMP_WORDS[@]}");
     unset words[0];
     unset words[\$COMP_CWORD];
-    local completions=\$(./topt autocomplete list "\${COMP_WORDS[*]}" "\${COMP_CWORD}");
+    local completions=\$(./totp autocomplete list "\${COMP_WORDS[*]}" "\${COMP_CWORD}");
     COMPREPLY=(\$(compgen -W "\$completions" -- "\$word"));
-}
+};
 
-complete -F topt_complete $0
+complete -F totp_complete $0
 
 OUT
 }
@@ -54,15 +59,15 @@ function cmd-autocomplete-list-help
     handle-help ${FUNCNAME} "$@"
     echo
     echo "USAGE:"
-    echo "  topt aucotomplete list <comp_words> <comp_cword>"
+    echo "  totp aucotomplete list <comp_words> <comp_cword>"
     echo
     echo "  <comp_words>    list of words typed"
     echo '  <comp_cword>    current typed word number from list'
     echo
     echo "e.g."
-    echo '    declare -A COMP_WORDS=([0]="topt" [1]="account" [2]="show" [3]="m" )'
+    echo '    declare -A COMP_WORDS=([0]="totp" [1]="account" [2]="show" [3]="m" )'
     echo '    declare -- COMP_CWORD="3"'
-    echo '   ./topt autocomplete list "${COMP_WORDS[*]}" "${COMP_CWORD}"'
+    echo '   ./totp autocomplete list "${COMP_WORDS[*]}" "${COMP_CWORD}"'
     echo
     echo
     handle-help-commands ${FUNCNAME}

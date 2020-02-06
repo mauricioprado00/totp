@@ -66,3 +66,14 @@ function gpg-get-account-key
 
     gpg2 --quiet --decrypt "$key_file_encrypted"
 }
+
+function suggest-gpg-tool
+{
+    which gpg2 > /dev/null
+    if [ $? -eq 0 ]; then
+        return
+    fi
+
+    echo -e "\n * You are missing a tool to encrypt data.\n   Please install: gpg2"
+
+}

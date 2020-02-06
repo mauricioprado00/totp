@@ -20,7 +20,6 @@ function screenshot-take
     local binary_file
     local wait=1
     local toolname
-    local tools_names
 
     declare -A tools
     declare -a tools_names
@@ -51,4 +50,24 @@ function screenshot-take-generic
     fi
 
     echo ${file}    
+}
+
+function suggest-screenshot-tools
+{
+    declare -A tools
+    declare -a tools_names
+    declare -- found=0
+    screenshot-tool-list tools tools_names
+
+    for toolname in "${tools_names[@]}"; do
+        binary_file=$(which ${toolname})
+        if [ $? -eq 0 ]; then
+            found=1
+            break
+        fi
+    done
+
+    if [ $found -ne 1 ]; then
+        echo -e "\n * You are missing a tool to take screenshots.\n   Please install any of these: \n   ${tools_names[@]}"
+    fi
 }
