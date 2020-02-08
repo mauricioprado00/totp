@@ -59,4 +59,15 @@ function helpdesc-cmd-generate
     echo -n "Generates a one-time password"
 }
 
+function suggest-generate-tools
+{
+    local toolname=oathtool
+
+    which ${toolname} > /dev/null
+    if [ $? -ne 0 ]; then
+        echo -e "\n * You are missing a tool to generate totp keys.\n   Please install oathtool"
+    fi
+
+}
+
 autocomplete_generate=cmd-account-list
