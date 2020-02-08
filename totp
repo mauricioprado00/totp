@@ -22,6 +22,8 @@ function invalid-command() {
     fi
 }
 
-handle-suggestions 'suggest-'
+if [ -t 1 ]; then
+    handle-suggestions 'suggest-'
+fi
 handle-command 'cmd' 'help' 'invalid-command' "$@"
 
