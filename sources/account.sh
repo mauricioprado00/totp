@@ -262,12 +262,70 @@ function cmd-account-show-help
     echo
 }
 
+autocomplete_account_show=cmd-account-list
+
+function cmd-account-qrcode
+{
+    local account_name="$1"
+    local qrcode_file="$2"
+    local res
+    local key
+
+    if [[ -z ${account_name} || \
+        -z ${qrcode_file} || \
+        ${account_name} =~ ^(--)?help$  ]]; then
+        cmd-account-qrcode-help
+        return;
+    fi
+
+    account-exists "${account_name}"
+    res=$?
+    if [ $res -ne 0 ]; then
+        >&2 echo "Account does not exists or key is missing"
+        let 'res = res + 10'
+        return $res
+    fi
+
+    key=$(gpg-get-account-key "${account_name}")
+    res=$?
+    if [ $res -ne 0 ]; then
+        >&2 echo "Could not successfully decrypt key"
+        let 'res = res + 20'
+        return $res;
+    fi
+
+    if [ -t 1 ]; then
+        echo 
+    fi
+    
+    echo -n "${key}" | sed 's#^QR-Code:##g' | qrencode -o "${qrcode_file}"
+
+    echo "Account Name: ${account_name}"
+    echo "GnuPG Encrypted totp key file: "$(account-key-file-encrypted $account_name)
+    echo "QrCode file: ${qrcode_file}"
+    if [ -t 1 ]; then
+        echo 
+    fi
+}
+
+function cmd-account-qrcode-help
+{
+    local accounts=$(cmd-account-list | sed 's# \|^#\n                     - #g')
+    echo
+    echo "USAGE:"
+    echo "  totp account qrcode <account_name> <output_file>"
+    echo
+    echo "  <account_name>  A string identifying the account. one of: ${accounts}"
+    echo "  <output_file>   A string identifying the output file for the qr code"
+    echo
+}
+
+autocomplete_account_qrcode=cmd-account-list
+
 function helpdesc-cmd-account-show
 {
     echo -n "Display account information"
 }
-
-autocomplete_account_show=cmd-account-list
 
 function cmd-account-rm
 {
